@@ -102,11 +102,14 @@ export const FILTERS: { id: FilterId; label: string }[] = [
    Index order matters: it is what makes the columns fill correctly.
    --------------------------------------------------------------------------- */
 
+// Positions 6 and 12 hold the two vertical Sweet Cream clips and were swapped
+// on 2026-08-07 at Bo's request, so the one that shows in the initial eight is
+// now the LOADMORE master. Both sit at 9/16, so the layout is unaffected.
 export const ALL_IDS: WorkId[] = [
   "bo-reel", "rbr-blxst", "artist-rollout", "dead-on-this-hill",
-  "cover-art", "wild-card-talent", "sweet-cream-vertical", "rowdy",
+  "cover-art", "wild-card-talent", "sweet-cream", "rowdy",
   "doth-book", "doth-shoot", "human-to-love", "rbr-bucks",
-  "sweet-cream", "creek-water", "get-maine-lobster", "sweet-cream-square",
+  "sweet-cream-vertical", "creek-water", "get-maine-lobster", "sweet-cream-square",
 ];
 
 export const ALL_RATIOS = [
