@@ -301,8 +301,13 @@ These are things the mockups do not solve, not things to copy faithfully:
 1. ~~Scaffold Next.js + Tailwind~~ **DONE 2026-08-07**
 2. ~~Design tokens (colors, fonts)~~ **DONE 2026-08-07.** `globals.css` + `layout.tsx`; grain implemented; `src/app/page.tsx` is a temporary token-proof page that the Home page replaces.
 3. ~~Case study template~~ **DONE 2026-08-07.** Both pages build from data. See below.
-4. Git init **DONE**, first two commits landed on `main`. GitHub repo and push still pending `gh auth login`.
+4. ~~Git init, GitHub repo, first commit~~ **DONE 2026-08-07.** Pushed to `BoLatham/bolatham-studio`.
 5. ~~Home page~~ **DONE 2026-08-07.**
+
+### Remaining
+
+- Vercel: import the GitHub repo, then add `bolatham.studio` and point IONOS DNS at it.
+- Bo has not yet visually reviewed the live site.
 
 ### Home page, as built
 
@@ -331,9 +336,18 @@ Marquee logos carry intrinsic `iw`/`ih` in the data so `next/image` picks a sane
 
 The rolodex `.is-hiding` CSS is confirmed to resolve to `scale(0.96)` / `brightness(0.7)`. The scroll-driven toggle has **not** been observed live for that reason.
 
-### Repo size
+### Repo
 
-`public/` is **204 MB**, of which ~183 MB is video shipped uncompressed at Bo's request. `.git` is ~192 MB after two commits. Nothing has been pushed yet, so this is still reversible; once pushed, the video is permanent in history even if later compressed.
+**https://github.com/BoLatham/bolatham-studio** — public, default branch `main`.
+
+Media was compressed via `scripts/build-media.sh` before the first push, so **no uncompressed video exists anywhere in history**. The pre-compression history was discarded by re-initialising while still local.
+
+| | Before | After |
+| --- | --- | --- |
+| `public/` | 204 MB | **75 MB** |
+| `.git` | 192 MB | **65 MB** |
+
+Per-clip reductions ran 72-90% (hero 12.1 MB to 1.2 MB). Durations are identical to the masters, all 30 clips decode cleanly, and `moov` sits at the front for progressive playback.
 
 ### Case study template, as built
 
