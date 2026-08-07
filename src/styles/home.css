@@ -237,10 +237,14 @@
   gap: var(--gap);
 }
 
+/* Lifted above the grain (z-index 5) so the work itself reads clean and
+   pops off the page, while everything around it stays textured. Still well
+   below the nav (50) and the mobile panel (40), which must stay on top. */
 .explore-cell {
   aspect-ratio: var(--ar, 4/5);
   width: 100%;
   position: relative;
+  z-index: 6;
   overflow: hidden;
   border-radius: 2px;
   background: linear-gradient(155deg, var(--bg-panel), var(--bg-panel-2));
