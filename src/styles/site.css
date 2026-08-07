@@ -1,0 +1,223 @@
+/* ===========================================================================
+   SITE CHROME — nav and footer
+   =========================================================================== */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem var(--edge);
+  background: rgba(31, 30, 31, 0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(239, 241, 237, 0.08);
+}
+
+/* Home only: starts invisible and is interpolated by script across the hero. */
+.nav--fade {
+  background: rgba(31, 30, 31, 0);
+  backdrop-filter: blur(0px);
+  border-bottom-color: rgba(239, 241, 237, 0);
+}
+
+.nav__mark {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.nav__mark img {
+  height: 40px;
+  width: auto;
+}
+
+.nav__links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav__links a {
+  text-decoration: none;
+  color: var(--cream-dim);
+  padding-bottom: 4px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.nav__links a:hover,
+.nav__links a:focus-visible {
+  color: var(--cream);
+}
+
+.nav__links a.is-active {
+  color: var(--cream);
+  border-bottom-color: var(--red);
+}
+
+/* ---------- Mobile trigger ---------- */
+
+/* Desktop shows the links only. The mockup left a "Menu" button visible at all
+   widths on Home, which was an oversight: it is a mobile affordance. */
+.nav__toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  margin-right: -0.5rem;
+  color: var(--cream);
+  line-height: 0;
+}
+
+.nav__toggle span {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.nav__toggle span + span {
+  margin-top: 6px;
+}
+
+.nav__toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.nav__toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav__toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* ---------- Mobile panel ---------- */
+
+/* The nav sits above the panel (z-index 50 vs 40) so the logo and the close
+   control stay visible and clickable. The top padding clears that bar,
+   otherwise the first link renders behind it. */
+.nav__panel {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--edge) + 4.5rem) var(--edge) calc(var(--edge) + 2.5rem);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.32s ease, visibility 0.32s;
+}
+
+.nav__panel[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav__panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav__panel a {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.25rem, 11vw, 3.5rem);
+  line-height: 1.15;
+  text-decoration: none;
+  color: var(--cream);
+  display: inline-block;
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Staggered reveal, restrained. */
+.nav__panel[data-open="true"] a {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.nav__panel[data-open="true"] li:nth-child(1) a {
+  transition-delay: 0.06s;
+}
+.nav__panel[data-open="true"] li:nth-child(2) a {
+  transition-delay: 0.12s;
+}
+.nav__panel[data-open="true"] li:nth-child(3) a {
+  transition-delay: 0.18s;
+}
+.nav__panel[data-open="true"] li:nth-child(4) a {
+  transition-delay: 0.24s;
+}
+
+.nav__panel a:hover,
+.nav__panel a:focus-visible {
+  color: var(--red);
+}
+
+/* Pinned rather than pushed with margin-top: auto, which would fight
+   justify-content: center and drag the links off centre. */
+.nav__panel-meta {
+  position: absolute;
+  left: var(--edge);
+  bottom: var(--edge);
+  font-size: 0.8rem;
+  color: var(--cream-faint);
+}
+
+@media (max-width: 780px) {
+  .nav__links {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: block;
+  }
+
+  .nav__mark img {
+    height: 32px;
+  }
+}
+
+@media (min-width: 781px) {
+  .nav__panel {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__panel,
+  .nav__panel a,
+  .nav__toggle span {
+    transition: none;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  padding: 2rem var(--edge) 3rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--cream-faint);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}

@@ -1,0 +1,360 @@
+/* ===========================================================================
+   CASE STUDY TEMPLATE
+   Ported from red-bull-case-study-mockup.html / blue-man-group-case-study-mockup.html.
+   Deviations from the mockup are marked and explained.
+   =========================================================================== */
+
+/* ---------- Header ---------- */
+
+.case-header {
+  padding: clamp(3rem, 9vw, 6rem) var(--edge) clamp(2rem, 5vw, 3rem);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.case-header__eyebrow {
+  display: block;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--red-dim);
+  margin-bottom: 1.25rem;
+}
+
+.case-header__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.75rem, 9vw, 6.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0 0 2rem;
+  max-width: 18ch;
+}
+
+.case-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+  border-bottom: 1px solid rgba(239, 241, 237, 0.08);
+}
+
+.case-header__meta div {
+  padding-left: clamp(1.25rem, 3vw, 2.5rem);
+  border-left: 1px solid var(--cream-faint);
+}
+
+.case-header__meta div:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.case-header__meta dt {
+  display: block;
+  color: var(--cream-dim);
+  font-size: 0.7rem;
+  margin-bottom: 0.35rem;
+}
+
+.case-header__meta dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--cream);
+}
+
+/* ---------- Row shell ---------- */
+
+.cs-main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: clamp(0.5rem, 1.5vw, 1rem) var(--edge) clamp(3rem, 8vw, 6rem);
+}
+
+.row {
+  margin-bottom: var(--gap);
+}
+
+/* Some rows breathe more before the next one. Mockup applied this inline. */
+.row--spaced {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* ---------- Cell ---------- */
+
+.cell {
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+  background: linear-gradient(155deg, var(--bg-panel), var(--bg-panel-2));
+  aspect-ratio: var(--ar, 16 / 10);
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+.cell__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Bottom-up scrim so overlaid numbers stay legible on any crop. */
+.cell__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(0deg, rgba(31, 30, 31, 0.65), rgba(31, 30, 31, 0.1) 55%);
+}
+
+.cell--full .cell__scrim {
+  background: linear-gradient(0deg, rgba(31, 30, 31, 0.6), rgba(31, 30, 31, 0.05) 55%);
+}
+
+.cell__tag {
+  position: relative;
+  z-index: 2;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 100px;
+  background: rgba(31, 30, 31, 0.55);
+  backdrop-filter: blur(3px);
+  color: var(--cream-dim);
+  border: 1px solid rgba(239, 241, 237, 0.2);
+}
+
+.cell__tag--corner {
+  position: absolute;
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* ---------- Stat cells ---------- */
+
+.cell--stat {
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.stat-number {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.95;
+  color: var(--cream);
+  margin-top: auto;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.stat-sub {
+  position: relative;
+  z-index: 2;
+  font-size: 0.8rem;
+  color: var(--cream-dim);
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+/* Full-bleed rows carry a much larger number. */
+.row--full .stat-number {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+}
+
+/* ---------- Row types ---------- */
+
+.row--full .cell {
+  --ar: 21 / 9;
+}
+
+.row--full .cell--mobile-only {
+  display: none;
+}
+
+.row--pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+
+.row--triptych {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: var(--gap);
+  align-items: center;
+}
+
+.row--triptych .cell {
+  --ar: 3 / 4;
+}
+
+.row--triptych .cell--motion {
+  transform: scale(1.04);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.row--trio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--gap);
+}
+
+.row--trio .cell {
+  --ar: 4 / 5;
+}
+
+/* ---------- Text row ---------- */
+
+.row--text {
+  max-width: 90ch;
+  padding: clamp(1.5rem, 4vw, 3rem) 0;
+}
+
+.row--text .eyebrow {
+  display: block;
+  font-weight: 500;
+  color: var(--red-dim);
+  font-size: 1.2625rem;
+  margin-bottom: 0.9rem;
+}
+
+/* DEVIATION: the mockup set `white-space: nowrap` here and only released it
+   at 420px, so any headline longer than the viewport overflowed between
+   roughly 421px and 780px. Balanced wrapping keeps the intended one-line look
+   wherever it fits and breaks gracefully where it does not. */
+.row--text .headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.6125rem, 2.6vw, 1.9625rem);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--cream);
+  margin: 0 0 1rem;
+  text-wrap: balance;
+}
+
+/* DEVIATION: body copy used hard <br> tags to force line breaks, which do not
+   hold across breakpoints. Copy now wraps naturally inside the measure. */
+.row--text .body {
+  margin: 0;
+  font-size: 1.3625rem;
+  line-height: 1.6;
+  color: var(--cream-dim);
+}
+
+/* ---------- Similar work ---------- */
+
+.similar {
+  padding: clamp(3rem, 7vw, 5rem) var(--edge) clamp(4rem, 8vw, 6rem);
+  border-top: 1px solid rgba(239, 241, 237, 0.08);
+}
+
+.similar__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  max-width: var(--max-w);
+  margin: 0 auto 2rem;
+}
+
+.similar__head h2 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Three columns holding one card, so it sits at a third width. Intentional. */
+.similar__grid {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.similar__card {
+  text-decoration: none;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.similar__card:hover,
+.similar__card:focus-visible {
+  transform: translateY(-6px);
+}
+
+.similar__card .cell {
+  --ar: 4 / 5;
+  margin-bottom: 1rem;
+}
+
+.similar__card h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  margin: 0 0 0.3rem;
+}
+
+.similar__card p {
+  font-weight: 500;
+  color: var(--cream-dim);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .similar__card {
+    transition: none;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 780px) {
+  .row--pair,
+  .row--trio,
+  .row--triptych,
+  .similar__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row--triptych .cell--motion {
+    transform: none;
+  }
+
+  /* Mobile-only content reordering. Desktop DOM order is never touched.
+     Driven per cell from the data via --mobile-order so a new case study can
+     reorder without new CSS. Currently only the Bucks triptych uses it. */
+  .row--triptych .cell {
+    order: var(--mobile-order, 0);
+  }
+
+  .case-header__meta div {
+    padding-left: 0;
+    border-left: none;
+    padding-right: 1.5rem;
+  }
+
+  /* Separate crops, swapped rather than resized. */
+  .row--full .cell {
+    --ar: 4 / 5;
+  }
+
+  .row--full .cell--desktop-only {
+    display: none;
+  }
+
+  .row--full .cell--mobile-only {
+    display: flex;
+  }
+}
