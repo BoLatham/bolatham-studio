@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '{ print NR\"\\\\t\"length\\($0\\) }' /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/home-page-mockup.clean.html)",
+      "Bash(sort -k2 -nr)",
+      "Bash(awk 'NR==490 { print substr\\($0,1,300\\) }' /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/home-page-mockup.clean.html)",
+      "Bash(perl -pe 's{b64:\\\\s*\"[A-Za-z0-9+/=]{100,}\"}{b64: \"B64_STRIPPED\"}g; s{\\(data:[\\\\w/+.\\\\-]+;base64,\\)[A-Za-z0-9+/=]{100,}}{$1BASE64_STRIPPED}g' /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/home-page-mockup.clean.html)",
+      "Bash(grep -o -E '[^<>]{0,45}—[^<>]{0,45}' /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/home.clean.html /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/red-bull-case-study-mockup.clean.html /private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/fdaec57b-10a7-4882-a91b-cb4c43a83301/scratchpad/blue-man-group-case-study-mockup.clean.html)",
+      "Bash(grep -v 'BASE64\\\\|^\\\\s*$')",
+      "Bash(xargs -0 -I{} stat -f%z \"{}\")",
+      "Bash(awk '{s+=$1} END {printf \"%.1f MB\\\\n\", s/1048576}')",
+      "Bash(git diff *)",
+      "Bash(xargs -0 -I{} stat -f \"%z {}\" \"{}\")",
+      "Bash(awk '{printf \"%7.1f MB  %s\\\\n\", $1/1048576, substr\\($0, index\\($0,$2\\)\\)}')",
+      "Bash(grep -iE '^ASSETS/|mockup\\\\.html$')",
+      "Bash(git commit *)",
+      "Bash(npm run *)",
+      "Bash(echo \"LINT EXIT: $?\")",
+      "Bash(git add *)",
+      "Bash(chmod +x scripts/build-media.sh)",
+      "Bash(rm -rf public/home/work public/home/hero public/case-studies)",
+      "Bash(./scripts/build-media.sh)",
+      "Bash(gh auth *)",
+      "Bash(gh api *)",
+      "Bash(rm -rf .git)",
+      "Bash(git init *)"
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   BO LATHAM STUDIO — DESIGN TOKENS
+   Ported verbatim from the mockups. These three colors are non-negotiable.
+   =========================================================================== */
+
+:root {
+  /* Core palette */
+  --bg: #1f1e1f;
+  --cream: #eff1ed;
+  --red: #de1a1a;
+
+  /* Derived surfaces */
+  --bg-panel: #2f353c;
+  --bg-panel-2: #363d45;
+
+  /* Derived text tints */
+  --cream-dim: rgba(239, 241, 237, 0.62);
+  --cream-faint: rgba(239, 241, 237, 0.28);
+  --red-dim: rgba(222, 26, 26, 0.75);
+
+  /* Rhythm */
+  --gap: clamp(1rem, 2.2vw, 2rem);
+  --edge: clamp(1.25rem, 5vw, 4rem);
+  --section-gap: clamp(1.75rem, 4.5vw, 3rem);
+
+  /* Layout */
+  --max-w: 1400px;
+}
+
+/* ---------------------------------------------------------------------------
+   Tailwind theme mapping.
+   Exposes the tokens above as utilities: bg-bg, text-cream, border-cream-faint,
+   font-display, max-w-site, p-edge, gap-gap, and the mobile: breakpoint.
+   --------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-cream: var(--cream);
+  --color-red: var(--red);
+  --color-panel: var(--bg-panel);
+  --color-panel-2: var(--bg-panel-2);
+  --color-cream-dim: var(--cream-dim);
+  --color-cream-faint: var(--cream-faint);
+  --color-red-dim: var(--red-dim);
+
+  /* Calluna is headline-only and comes from Adobe Typekit (kit otl3gko).
+     Inter is everything else, self-hosted by next/font. */
+  --font-display: "calluna", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --spacing-edge: var(--edge);
+  --spacing-gap: var(--gap);
+  --spacing-section: var(--section-gap);
+
+  --container-site: var(--max-w);
+
+  /* The mockups branch at 780px, not Tailwind's default 768px. Keeping the
+     exact number matters: the hero video source, the nav, the triptych
+     collapse and the stat-overlay crop all swap on this one boundary. */
+  --breakpoint-mobile: 781px;
+}
+
+/* ===========================================================================
+   BASE
+   =========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+/* Headline face. Weight 900 is a real Calluna Black cut in kit otl3gko,
+   not a synthesized bold. */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+
+/* ===========================================================================
+   GRAIN
+   The mockups declare .grain but never give it a background, so it paints
+   nothing. This is the real implementation: a tiled fractal-noise SVG as a
+   data URI. No image request, no JS, one composited layer.
+   =========================================================================== */
+
+/* The noise is white speckle carried in the ALPHA channel, not opaque grey.
+   feColorMatrix forces RGB to white and moves the turbulence luminance into
+   alpha, so the grain sits on top without lifting the blacks into mud.
+
+   The mockup specified mix-blend-mode: overlay. That cannot work here: overlay
+   against a backdrop darker than 50% resolves to 2 x backdrop x source, and
+   #1F1E1F sits at ~12%, which crushes the noise to roughly a quarter of its
+   amplitude before the 5% opacity is even applied. Normal blending over
+   alpha-keyed noise is what actually reads. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.34 0.34 0.34 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 240px 240px;
+  animation: grain-flicker 6s steps(8) infinite;
+  will-change: opacity;
+}
+
+/* Amplitudes scaled to match the new blending. Same rhythm as the mockup. */
+@keyframes grain-flicker {
+  0%,
+  100% {
+    opacity: 0.13;
+  }
+  20% {
+    opacity: 0.19;
+  }
+  40% {
+    opacity: 0.1;
+  }
+  60% {
+    opacity: 0.175;
+  }
+  80% {
+    opacity: 0.145;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+    opacity: 0.145;
+  }
+}
