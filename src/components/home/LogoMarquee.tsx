@@ -26,12 +26,14 @@ export default function LogoMarquee() {
                 }
                 aria-hidden={pass === 1 ? true : undefined}
               >
+                {/* Height is left to the stylesheet on purpose. An inline
+                    height beats a media query, so setting it here pinned every
+                    logo to --h and the mobile --hm override never applied. */}
                 <Image
                   src={logo.src}
                   alt={pass === 1 ? "" : logo.alt}
                   height={logo.h}
                   width={Math.round(logo.h * (logo.iw / logo.ih))}
-                  style={{ height: "var(--h)", width: "auto" }}
                 />
               </div>
             )),

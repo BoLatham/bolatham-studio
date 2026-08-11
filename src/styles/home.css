@@ -33,9 +33,17 @@
   position: relative;
 }
 
+/* svh, not vh. On iOS Safari vh resolves against the large viewport, the height
+   the page would have with the toolbars retracted, so at first paint (toolbars
+   showing) a 70vh hero eats far more than 70% of what is actually on screen and
+   pushes the logo marquee off the bottom. svh is the toolbar-visible height,
+   which is exactly the first impression this is sized for. Not dvh: that tracks
+   the toolbars live and would resize the hero mid-scroll. Desktop is unaffected,
+   where all three units are equal. */
 .hero__media {
   width: 100%;
   height: 70vh;
+  height: 70svh;
   position: relative;
   overflow: hidden;
 }
