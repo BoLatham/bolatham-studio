@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import {
+  siteDescription as description,
+  shareVideo,
+  siteUrl,
+} from "@/data/share";
 import "./globals.css";
 
 // Self-hosted by next/font, so no request ever leaves for Google.
@@ -10,13 +15,32 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bolatham.studio"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Bo Latham",
     template: "%s | Bo Latham",
   },
-  description:
-    "Nashville-based creative director and brand strategist. Full-service production across music, sports, and culture-driven spaces.",
+  description,
+  // Without these, Messages/Slack/etc. scrape the page and pick an arbitrary
+  // image out of the Explore grid. The og:image itself comes from
+  // app/opengraph-image.png via the file convention, which also emits
+  // og:image:width / :height / :type.
+  openGraph: {
+    type: "website",
+    siteName: "Bo Latham",
+    // Apple's TN3156 asks that the site name stay out of og:title, since the
+    // preview renders it separately.
+    title: "Creative Director & Brand Strategist",
+    description,
+    url: "/",
+    locale: "en_US",
+    videos: [shareVideo],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Creative Director & Brand Strategist",
+    description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

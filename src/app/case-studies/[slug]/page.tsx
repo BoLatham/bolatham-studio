@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy, getSimilarWork } from "@/data/case-studies";
+import { shareVideo } from "@/data/share";
 import Nav from "@/components/site/Nav";
 import Footer from "@/components/site/Footer";
 import Rows from "@/components/case-study/rows";
@@ -18,9 +19,29 @@ export async function generateMetadata({
   const { slug } = await params;
   const study = getCaseStudy(slug);
   if (!study) return {};
+  const description = `${study.client}. ${study.category}.`;
+  // openGraph has to be restated here. Metadata merges per top-level key, so a
+  // page that only sets `title` still inherits the root's og:title, and a
+  // shared case study link would read "Creative Director & Brand Strategist".
+  // Restating it drops everything else the root declared, which is why the
+  // video is spread back in. The image is the exception and still falls through
+  // from app/opengraph-image.png.
   return {
     title: study.title,
-    description: `${study.client}. ${study.category}.`,
+    description,
+    openGraph: {
+      type: "website",
+      siteName: "Bo Latham",
+      title: study.title,
+      description,
+      url: `/case-studies/${study.slug}`,
+      locale: "en_US",
+      videos: [shareVideo],
+    },
+    twitter: {
+      title: study.title,
+      description,
+    },
   };
 }
 

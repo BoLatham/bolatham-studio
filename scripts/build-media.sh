@@ -7,6 +7,10 @@
 # case study lands; it is idempotent and always encodes from the original, so
 # repeated runs never stack generation loss.
 #
+# One output lands outside public/: the Open Graph still is written to
+# src/app/opengraph-image.png, where Next's file convention picks it up. See the
+# social share section for why it has to live there.
+#
 #   ./scripts/build-media.sh
 #
 # Requires ffmpeg (brew install ffmpeg).
@@ -48,6 +52,36 @@ hero() { encode "$1" "$2" 1920 24; }   # full-bleed hero
 
 copy() { mkdir -p "$(dirname "$2")"; cp "$1" "$2"; }
 
+# --- social share -------------------------------------------------------------
+# The link preview pair. Messages plays og:video inline, muted and looping, and
+# every client that will not play it falls back to og:image, so the two have to
+# stay in the same 1.91:1 box or the video letterboxes inside the card.
+#
+# Both masters are already 1200x630, so nothing is scaled here: the video is
+# re-encoded only to shed bitrate. Apple caps all preview resources for a single
+# link at 10MB combined and downloads the video before playing it, so this
+# trades the grid's CRF 26 for 18. On a flat dark field with a logo animation
+# that lands near 0.75MB, which leaves the whole budget spare and still measures
+# SSIM 0.995 against the master, so the fades stay free of banding.
+
+share_video() {      # share_video <src> <dst>
+  mkdir -p "$(dirname "$2")"
+  ffmpeg -y -loglevel error -i "$1" \
+    -c:v libx264 -profile:v high -pix_fmt yuv420p \
+    -crf 18 -preset slow -an -movflags +faststart \
+    "$2"
+}
+
+# The still is flattened onto --bg rather than copied. It carries a soft-edged
+# alpha channel, and scrapers composite transparency onto whatever they like,
+# frequently white, which would invert the whole design.
+share_still() {      # share_still <src> <dst>
+  mkdir -p "$(dirname "$2")"
+  ffmpeg -y -loglevel error -i "$1" \
+    -filter_complex "color=c=0x1F1E1F:s=1200x630[bg];[bg][0:v]overlay=0:0:format=auto,format=rgb24" \
+    -frames:v 1 "$2"
+}
+
 echo "==> hero"
 hero "$A/HOME/HEADER/HERO HEADER - DESKTOP.mp4" "$P/home/hero/hero-desktop.mp4"
 hero "$A/HOME/HEADER/HERO HEADER - MOBILE.mp4"  "$P/home/hero/hero-mobile.mp4"
@@ -69,7 +103,16 @@ copy "$L/12 - BAMA.png"                                      "$O/12-bama.png"
 copy "$L/13 - Starstruck_EntertainmentWhite.png"             "$O/13-starstruck.png"
 
 echo "==> brand"
-copy "$A/HOME/PERSONAL BRAND LOGO/WORDMARK - INITIALS - OFFICIAL LOGO.svg" "$P/brand/logo.svg"
+B="$A/HOME/PERSONAL BRAND LOGO"
+copy "$B/WORDMARK - INITIALS - OFFICIAL LOGO.svg" "$P/brand/logo.svg"
+
+echo "==> social share"
+share_video "$B/BO LATHAM STUDIO - SOCIAL SHARE IMAGE (VIDEO).mp4" "$P/share/og-video.mp4"
+# The one output that lands outside public/. src/app/opengraph-image.png is a
+# Next file convention: keeping the still there means every route inherits an
+# og:image automatically, including case studies, whose generateMetadata
+# replaces the openGraph object wholesale and would otherwise drop it.
+share_still "$B/BO LATHAM STUDIO - SOCIAL SHARE IMAGE (FALLBACK).png" "$ROOT/src/app/opengraph-image.png"
 
 echo "==> home case study thumbs"
 C="$A/HOME/CASE STUDIES"; O="$P/home/case-studies"
