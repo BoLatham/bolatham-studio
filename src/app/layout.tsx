@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import {
-  siteDescription as description,
-  shareVideo,
-  siteUrl,
-} from "@/data/share";
+import { siteDescription as description, siteUrl } from "@/data/share";
 import "./globals.css";
 
 // Self-hosted by next/font, so no request ever leaves for Google.
@@ -37,7 +33,6 @@ export const metadata: Metadata = {
     description,
     url: "/",
     locale: "en_US",
-    videos: [shareVideo],
   },
   twitter: {
     card: "summary_large_image",

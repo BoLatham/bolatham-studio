@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy, getSimilarWork } from "@/data/case-studies";
-import { shareVideo } from "@/data/share";
+import { shareImage } from "@/data/share";
 import Nav from "@/components/site/Nav";
 import Footer from "@/components/site/Footer";
 import Rows from "@/components/case-study/rows";
@@ -23,10 +23,9 @@ export async function generateMetadata({
   // openGraph has to be restated here. Metadata merges per top-level key, so a
   // page that only sets `title` still inherits the root's og:title, and a
   // shared case study link would read "Bo Latham: Art Director & Brand
-  // Strategist".
-  // Restating it drops everything else the root declared, which is why the
-  // video is spread back in. The image is the exception and still falls through
-  // from app/opengraph-image.png.
+  // Strategist". Restating it replaces the root's object outright, which takes
+  // the file-convention og:image with it and drops twitter:card back to a plain
+  // summary, so both are named again here.
   return {
     title: study.title,
     description,
@@ -37,11 +36,13 @@ export async function generateMetadata({
       description,
       url: `/case-studies/${study.slug}`,
       locale: "en_US",
-      videos: [shareVideo],
+      images: [shareImage],
     },
     twitter: {
+      card: "summary_large_image",
       title: study.title,
       description,
+      images: [shareImage],
     },
   };
 }

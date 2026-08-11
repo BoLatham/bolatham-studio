@@ -14,23 +14,30 @@ export const siteDescription =
   "LA and Nashville-based Creative Content Connoisseur and Multi-Maximum Media Machine. Full-service production across music, sports, and culture-driven spaces.";
 
 /**
- * Apple's TN3156: when a preview finds an og:video pointing at a directly
- * downloadable, playable asset, it downloads it and plays it back on its own,
- * muted and looping. It has to be a plain progressive MP4 — an HLS stream makes
- * the viewer tap to start, and anything that needs an HTML embed will not play
- * inline at all. Dimensions match opengraph-image.png so the card does not
- * letterbox when the video takes over from the still.
- *
- * Both URLs are absolute on purpose. metadataBase resolves relative og:url and
- * og:image, but it does not touch video URLs, so a relative path here ships a
- * relative og:video that off-site scrapers cannot fetch.
+ * Restating openGraph on a child route drops the file-convention og:image with
+ * it, not only the fields named in the override, and restating twitter drops
+ * the card type down to a plain summary. Neither failure shows up unless the
+ * rendered tags are read back, so any route that overrides either object has to
+ * name the image itself. The root layout is the one place that can still leave
+ * it to app/opengraph-image.png.
  */
-const shareVideoPath = "/share/og-video.mp4";
-
-export const shareVideo = {
-  url: `${siteUrl}${shareVideoPath}`,
-  secureUrl: `${siteUrl}${shareVideoPath}`,
-  type: "video/mp4",
+export const shareImage = {
+  url: "/opengraph-image.png",
   width: 1200,
   height: 630,
+  alt: "The BL monogram of Bo Latham, cream script initials on a red disc.",
 };
+
+/**
+ * There is deliberately no og:video here.
+ *
+ * A preview carrying og:video is a video player in Messages, not a picture that
+ * happens to move: the video surface owns the tap and opens system playback.
+ * Open Graph exposes nothing to animate the card while still sending the tap to
+ * the URL, so the looping clip cost the click that sharing the link exists to
+ * earn. Dropped 2026-08-11 at Bo's call, in favour of the still, which taps
+ * straight through to the site.
+ *
+ * The master is still in ASSETS/HOME/PERSONAL BRAND LOGO/ if this is ever
+ * revisited, and build-media.sh records the encode it used.
+ */

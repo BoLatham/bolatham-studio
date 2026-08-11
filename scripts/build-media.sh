@@ -53,25 +53,23 @@ hero() { encode "$1" "$2" 1920 24; }   # full-bleed hero
 copy() { mkdir -p "$(dirname "$2")"; cp "$1" "$2"; }
 
 # --- social share -------------------------------------------------------------
-# The link preview pair. Messages plays og:video inline, muted and looping, and
-# every client that will not play it falls back to og:image, so the two have to
-# stay in the same 1.91:1 box or the video letterboxes inside the card.
+# Only the still. There was a matching 1200x630 og:video here until 2026-08-11,
+# and it worked: Messages played it inline, muted and looping. It was dropped
+# because a preview carrying og:video becomes a video player, so tapping the
+# card opened system playback instead of the site, and Open Graph offers no way
+# to keep the motion while sending the tap to the URL.
 #
-# Both masters are already 1200x630, so nothing is scaled here: the video is
-# re-encoded only to shed bitrate. Apple caps all preview resources for a single
-# link at 10MB combined and downloads the video before playing it, so this
-# trades the grid's CRF 26 for 18. On a flat dark field with a logo animation
-# that lands near 0.75MB, which leaves the whole budget spare and still measures
-# SSIM 0.995 against the master, so the fades stay free of banding.
-
-share_video() {      # share_video <src> <dst>
-  mkdir -p "$(dirname "$2")"
-  ffmpeg -y -loglevel error -i "$1" \
-    -c:v libx264 -profile:v high -pix_fmt yuv420p \
-    -crf 18 -preset slow -an -movflags +faststart \
-    "$2"
-}
-
+# If it is ever wanted back, the master is SOCIAL SHARE IMAGE (VIDEO).mp4 in
+# ASSETS/HOME/PERSONAL BRAND LOGO/ and the encode was:
+#
+#   ffmpeg -i <src> -c:v libx264 -profile:v high -pix_fmt yuv420p \
+#     -crf 18 -preset slow -an -movflags +faststart <dst>
+#
+# CRF 18 rather than the grid's 26 because Apple caps all preview resources for
+# one link at 10MB and fetches the video before playing it. That landed at
+# 0.78MB and measured SSIM 0.995 against the master, keeping the fades free of
+# banding with the whole budget still spare.
+#
 # The still is flattened onto --bg rather than copied. It carries a soft-edged
 # alpha channel, and scrapers composite transparency onto whatever they like,
 # frequently white, which would invert the whole design.
@@ -107,7 +105,6 @@ B="$A/HOME/PERSONAL BRAND LOGO"
 copy "$B/WORDMARK - INITIALS - OFFICIAL LOGO.svg" "$P/brand/logo.svg"
 
 echo "==> social share"
-share_video "$B/BO LATHAM STUDIO - SOCIAL SHARE IMAGE (VIDEO).mp4" "$P/share/og-video.mp4"
 # The one output that lands outside public/. src/app/opengraph-image.png is a
 # Next file convention: keeping the still there means every route inherits an
 # og:image automatically, including case studies, whose generateMetadata
