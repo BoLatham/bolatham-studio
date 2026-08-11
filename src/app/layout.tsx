@@ -28,9 +28,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Bo Latham",
-    // Apple's TN3156 asks that the site name stay out of og:title, since the
-    // preview renders it separately.
-    title: "Art Director & Brand Strategist",
+    // Apple's TN3156 asks that the site name stay out of og:title on the
+    // grounds that the preview renders it separately. Messages does not: it
+    // shows the title and the domain only, so without the name here Bo's does
+    // not appear on the card at all. Carrying it is deliberate, at the cost of
+    // repeating og:site_name on the clients that do render both.
+    title: "Bo Latham: Art Director & Brand Strategist",
     description,
     url: "/",
     locale: "en_US",
@@ -38,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Art Director & Brand Strategist",
+    title: "Bo Latham: Art Director & Brand Strategist",
     description,
   },
 };

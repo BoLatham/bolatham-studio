@@ -22,7 +22,8 @@ export async function generateMetadata({
   const description = `${study.client}. ${study.category}.`;
   // openGraph has to be restated here. Metadata merges per top-level key, so a
   // page that only sets `title` still inherits the root's og:title, and a
-  // shared case study link would read "Art Director & Brand Strategist".
+  // shared case study link would read "Bo Latham: Art Director & Brand
+  // Strategist".
   // Restating it drops everything else the root declared, which is why the
   // video is spread back in. The image is the exception and still falls through
   // from app/opengraph-image.png.

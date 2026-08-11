@@ -11,7 +11,7 @@
 export const siteUrl = "https://bolatham.studio";
 
 export const siteDescription =
-  "LA and Nashville-based creative content and media machine. Full-service production across music, sports, and culture-driven spaces.";
+  "LA and Nashville-based Creative Content and Media Machine. Full-service production across music, sports, and culture-driven spaces.";
 
 /**
  * Apple's TN3156: when a preview finds an og:video pointing at a directly
