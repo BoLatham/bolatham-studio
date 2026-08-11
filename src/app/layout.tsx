@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "Bo Latham",
     // Apple's TN3156 asks that the site name stay out of og:title, since the
     // preview renders it separately.
-    title: "Creative Director & Brand Strategist",
+    title: "Art Director & Brand Strategist",
     description,
     url: "/",
     locale: "en_US",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Creative Director & Brand Strategist",
+    title: "Art Director & Brand Strategist",
     description,
   },
 };
