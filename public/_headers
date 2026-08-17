@@ -1,0 +1,25 @@
+# Cloudflare Pages reads this file from the root of the build output.
+#
+# next.config.ts sets the same caching through Next's headers() config, but that
+# only applies on a server that runs Next. A static export is just files, so the
+# rules have to be repeated here for Cloudflare to serve them.
+#
+# Media filenames are stable (scripts/build-media.sh always encodes from the
+# masters to a fixed name), so a year of immutable caching is safe. Rename the
+# file if a clip is ever re-cut, or already-cached browsers keep the old one.
+
+/home/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/brand/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Only the media under this path, never the HTML routes that share the prefix.
+/case-studies/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/case-studies/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/case-studies/*.mp4
+  Cache-Control: public, max-age=31536000, immutable

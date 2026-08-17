@@ -1,0 +1,30 @@
+# Video is by far the most expensive thing this site serves and has no search
+# value, so crawlers are asked to leave it alone. Pages and images stay open.
+User-agent: *
+Disallow: /*.mp4$
+
+# High-volume scrapers that pull media in bulk. This site is a portfolio for a
+# handful of human visitors; none of these send anyone here.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /

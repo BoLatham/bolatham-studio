@@ -4,14 +4,29 @@
     {
       "name": "bolatham-studio",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     },
     {
       "name": "bolatham-studio-prod",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start"],
+      "runtimeArgs": [
+        "run",
+        "start"
+      ],
       "port": 3000
+    },
+    {
+      "name": "bolatham-studio-static",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "/private/tmp/claude-501/-Users-bolatham-Documents-Claude-Projects-BO-LATHAM-STUDIO/50b08fb8-62c0-4709-98c0-fa3f59cb2a42/scratchpad/static-server.js",
+        "/Users/bolatham/Documents/Claude/Projects/BO LATHAM STUDIO/out"
+      ],
+      "port": 4321
     }
   ]
 }
