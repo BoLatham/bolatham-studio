@@ -37,7 +37,7 @@ TypeScript was chosen because the case study template is a discriminated union o
 Tokens in `@theme` generate utilities (`bg-bg`, `text-cream`, `text-red`, `max-w-site`, `p-edge`). Bespoke component CSS is ported near-verbatim from the mockups rather than rewritten as utility soup. Rules like `grid-template-columns: 1fr 1.3fr 1fr`, the `clamp()` type ramps, and the mobile `order` overrides are clearer and higher-fidelity as CSS. **The mockups are the source of truth; do not sacrifice fidelity to make something more "Tailwind-y."**
 
 - GitHub for version control. Repo will be **public**; git identity is set to Bo Latham / `154285251+BoLatham@users.noreply.github.com`, default branch `main`. GitHub username `BoLatham`.
-- Vercel for hosting. Production domain is **bolatham.studio**, already owned on **IONOS**; DNS to be pointed at Vercel.
+- **Cloudflare Pages** for hosting, free plan. Production domain is **bolatham.studio**, registered at **IONOS**, nameservers delegated to Cloudflare. DNS records live in Cloudflare; IONOS holds the registration and nothing else. Moved off Vercel 2026-08-17; see **Hosting** below for why.
 
 ---
 
@@ -233,7 +233,7 @@ Encoding settings, and why:
 - `+faststart` so playback can begin before the file finishes downloading.
 - A JPEG poster is emitted next to every clip. Homebrew's ffmpeg has **no `libwebp` encoder**, so posters are JPEG rather than WebP.
 
-Images are copied unchanged; `next/image` handles resizing and format negotiation at request time.
+Images are copied unchanged. `next/image` runs with `unoptimized: true`, which `output: export` requires, so images are served exactly as they sit in `public/` with no resizing or format negotiation. That costs little because the masters are already cut to the exact ratios the layouts use, and it removes the `/_next/image` round trip that was a large share of the request count on Vercel.
 
 ### Rules
 
@@ -252,7 +252,7 @@ Because this is an Intel Mac, Homebrew installs to `/usr/local` and Node's `.pkg
 
 **Installed and verified 2026-08-07:** Node 24.19.0, npm 11.17.0, Homebrew 6.0.15, ffmpeg 8.1.2, gh 2.97.0, git 2.39.5. Git identity configured globally.
 
-Still to do: `gh auth login`, `git init`, first commit, GitHub repo, Vercel deploy, IONOS DNS.
+All done as of 2026-08-17: `gh auth login`, `git init`, first commit, GitHub repo, production deploy, DNS.
 
 **macOS gotchas hit on this machine, both likely to recur:**
 
@@ -306,8 +306,8 @@ These are things the mockups do not solve, not things to copy faithfully:
 
 ### Remaining
 
-- Vercel: import the GitHub repo, then add `bolatham.studio` and point IONOS DNS at it.
 - Bo has not yet visually reviewed the live site.
+- Check Cloudflare traffic analytics a few days after 2026-08-17 to confirm the crawler blocking held. Millions of requests means it did not; spend one of the five free WAF rules on the offender.
 
 ### Home page, as built
 
@@ -328,7 +328,7 @@ The four Explore layouts are four components in `src/components/home/grids.tsx`.
 
 Next 16's ESLint enforces `react-hooks/set-state-in-effect`. Do not set state in an effect to read a media query; use `useSyncExternalStore`.
 
-Marquee logos carry intrinsic `iw`/`ih` in the data so `next/image` picks a sane source width. Most are square canvases with heavy transparent padding, which is why the rendered heights range from 96px to 293px.
+Marquee logos carry intrinsic `iw`/`ih` in the data. That drove source-width selection when images were optimized; under `unoptimized: true` it now only sets the intrinsic aspect ratio so the layout does not shift while loading. Most are square canvases with heavy transparent padding, which is why the rendered heights range from 96px to 293px.
 
 ### Verification notes
 
@@ -348,6 +348,56 @@ Media was compressed via `scripts/build-media.sh` before the first push, so **no
 | `.git` | 192 MB | **65 MB** |
 
 Per-clip reductions ran 72-90% (hero 12.1 MB to 1.2 MB). Durations are identical to the masters, all 30 clips decode cleanly, and `moov` sits at the front for progressive playback.
+
+### Hosting (Cloudflare Pages, since 2026-08-17)
+
+**Why the site left Vercel.** Vercel paused the whole `bolathams-projects` team with
+`402 DEPLOYMENT_DISABLED` for exceeding the Hobby free tier: **3.19M Edge Requests against a
+1M cap, and 198 GB outgoing**, over Jul 18 - Aug 17. Almost none of it was real. 99.2% of the
+requests came from a single edge region (Cleveland) while Bo had told exactly two people in
+Nashville the site existed. Human traffic never concentrates like that, and real usage is
+about 30 visits a month. It was an automated crawler pulling the 44 MB of video repeatedly,
+and there was no `robots.txt` to discourage it.
+
+Three things made it expensive rather than merely annoying:
+
+- Vercel serves `public/` with `max-age=0, must-revalidate`, so all ~130 media files
+  revalidated on every page view. A 304 still bills as a request.
+- Video is fetched in ranges, several requests per clip.
+- Every `next/image` call was a separate `/_next/image` invocation.
+
+**The setup now.** Static export (`output: export`) to plain files, deployed by the Cloudflare
+GitHub app on every push to `main`. Free plan, which does not meter requests or bandwidth for
+static sites, so there is no counter left to blow through.
+
+| Setting | Value |
+| --- | --- |
+| Build command | `npm run build` |
+| Build output directory | `out` |
+| `NODE_VERSION` | `24` (build fails on the default without it) |
+
+**Cache headers live in `public/_headers`, not `next.config.ts`.** A static export has no server,
+so Next's `headers()` config is inert there and only emits build warnings; it was removed. The
+`_headers` file is what Cloudflare reads. It matches media by extension rather than by directory
+because `/case-studies` is both a media folder and a real route, and freezing that HTML for a
+year would hide future edits from anyone who had already visited.
+
+**Media is cached `immutable` for a year.** Filenames are stable because `build-media.sh` always
+encodes from the masters to a fixed name. The tradeoff: re-cutting a clip without renaming it
+leaves already-cached browsers on the old copy. Rename the file when that happens.
+
+**Crawler policy.** `public/robots.txt` disallows `.mp4` for everyone and blocks the bulk media
+scrapers by name. That is only a request, so it is backed by two Cloudflare settings on the zone:
+**AI Crawl Control → Training → Block** (the default "Block on pages with ads" does nothing here,
+there are no ads) and **Security → Bots → Bot Fight Mode → on**.
+
+**Hotlink Protection is deliberately off.** It keys on the `Referer` header, so it would not have
+stopped a crawler fetching files directly, and it can break `og:image` previews in Messages and
+Slack, which the share-card commits exist to get right.
+
+**Gotcha.** Cloudflare's "Retry deployment" rebuilds the commit that deployment was pinned to, so
+it will replay a failure forever. Use "Create deployment", or push, to build latest. The third line
+of the build log names the commit; check it before debugging anything else.
 
 ### Case study template, as built
 
