@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 const MOBILE_QUERY = "(max-width: 780px)";
 
@@ -15,6 +15,77 @@ const getSnapshot = () =>
 
 /** No video in the server HTML; the client resolves which one to fetch. */
 const getServerSnapshot = () => null;
+
+/** Events after which a refused autoplay is worth attempting again. */
+const GESTURES = [
+  "pointerdown",
+  "touchstart",
+  "touchend",
+  "click",
+  "keydown",
+  "scroll",
+] as const;
+
+/**
+ * Keeps the hero clip running, which the autoplay attribute alone does not
+ * achieve on a phone. Three things get in the way, and the poster frame is all
+ * that shows when they do:
+ *
+ * 1. React assigns muted as a DOM property, so no muted attribute ever reaches
+ *    the element. WebKit reads the attribute when it decides whether a video
+ *    may start on its own, so a video React built looks unmuted to the policy
+ *    and is refused. Writing the attribute is what makes it eligible.
+ * 2. iOS Low Power Mode and Android battery saver refuse every autoplay
+ *    whatever the attributes say. A single user gesture lifts that for the
+ *    page, so the first touch, tap, key or scroll retries.
+ * 3. A clip that was never allowed to start is still paused when the tab
+ *    returns to the foreground, so visibility changes retry too.
+ *
+ * Each attempt is a no-op while the video is already running, and a rejected
+ * play() leaves the poster up, which is the same fallback as before.
+ */
+function useBackgroundPlayback(variant: "mobile" | "desktop" | null) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Attribute as well as property, per (1) above. defaultMuted is the
+    // property that maps to the attribute, so set all three and let whichever
+    // one the engine consults find the video muted.
+    el.defaultMuted = true;
+    el.muted = true;
+    el.setAttribute("muted", "");
+
+    const attempt = () => {
+      if (!el.paused) return;
+      void el.play().catch(() => {});
+    };
+
+    el.addEventListener("loadeddata", attempt);
+    el.addEventListener("canplay", attempt);
+    document.addEventListener("visibilitychange", attempt);
+    for (const event of GESTURES) {
+      window.addEventListener(event, attempt, { passive: true });
+    }
+
+    // The element may already hold enough data to start, in which case none of
+    // those events is still coming.
+    attempt();
+
+    return () => {
+      el.removeEventListener("loadeddata", attempt);
+      el.removeEventListener("canplay", attempt);
+      document.removeEventListener("visibilitychange", attempt);
+      for (const event of GESTURES) {
+        window.removeEventListener(event, attempt);
+      }
+    };
+  }, [variant]);
+
+  return ref;
+}
 
 /**
  * Hero with separate desktop and mobile video sources.
@@ -32,6 +103,7 @@ const getServerSnapshot = () => null;
  */
 export default function Hero() {
   const variant = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const videoRef = useBackgroundPlayback(variant);
 
   return (
     <section className="hero">
@@ -51,6 +123,7 @@ export default function Hero() {
 
         {variant && (
           <video
+            ref={videoRef}
             className="hero__video"
             src={`/home/hero/hero-${variant}.mp4`}
             autoPlay
