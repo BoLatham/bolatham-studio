@@ -128,6 +128,31 @@
 }
 
 @media (max-width: 780px) {
+  /* The copy block is a fixed height, so whatever room the hero has spare sits
+     as equal air above the headline and below the bio. At 70svh that left 84px
+     of it under the last line on a 393x684 phone, which reads as a gap between
+     the bio and the logo row rather than as part of the hero. 66svh closes most
+     of that and keeps the full-bleed feel.
+
+     A floor, not a fixed height. The hero was pinned to a viewport fraction
+     while .hero__content sat absolute inside it, so on a narrow phone the copy
+     simply overflowed and was clipped at both ends by the overflow: hidden.
+     That predates this rule: the bio needs 472px at 360px wide and 499px at
+     320px, which 70svh never cleared on a short viewport either. Putting the
+     content back in flow lets the hero grow past the floor when the copy needs
+     it, so nothing is ever cut; the video, scrim and fade stay absolute at
+     inset: 0 and cover whatever height it settles at. */
+  .hero__media {
+    height: auto;
+    min-height: 62vh;
+    min-height: 62svh;
+  }
+
+  .hero__content {
+    position: relative;
+    min-height: inherit;
+  }
+
   .hero__fade {
     height: 60%;
   }
@@ -182,6 +207,31 @@
 }
 
 @media (max-width: 780px) {
+  /* The rest of the page moves on a 48/96 scale: 48px where a band meets the
+     section it belongs to (the case study stack into Testimonials) and 96px
+     between two full sections. The row sat at 20/28, a third of that, which
+     made the top of the page read tighter than anything below it.
+
+     32 above and 48 below puts it on the same scale and says what the row is:
+     part of the opening, so it stays closer to the hero than to the first real
+     section, with a true band break before the Explore headline. The hero's
+     own air below the bio and its fade add to the 32, so the two sides look
+     closer than the numbers suggest. */
+  .marquee-outer {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Every --hm is calibrated so each mark renders 56px tall whatever padding
+     its canvas carries, which is why F1 (142px) and Universal (171px) are set
+     so much taller than the rest: they are mostly transparency. The row only
+     stood 171px because of those two, so 115px of it was empty. Clipping the
+     track crops that padding and nothing else, since every mark is centred and
+     56px and .marquee already hides the overflow. No logo changes size. */
+  .marquee__track {
+    height: 72px;
+  }
+
   .marquee__item img {
     height: var(--hm, 44px);
   }
