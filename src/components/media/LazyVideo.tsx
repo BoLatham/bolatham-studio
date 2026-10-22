@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { GESTURES, markMuted } from "./autoplay";
 
 interface Props {
   src: string;
@@ -31,21 +32,49 @@ export default function LazyVideo({ src, poster, className, label }: Props) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
+    markMuted(el);
+
+    let visible = false;
+
+    const attempt = () => {
+      // Nothing to do when it is off screen or already running. A rejected
+      // play() leaves the poster up, which is an acceptable fallback.
+      if (!visible || !el.paused) return;
+      void el.play().catch(() => {});
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          // play() rejects if the browser blocks autoplay. The poster stays up,
-          // which is a perfectly acceptable fallback.
-          void el.play().catch(() => {});
-        } else {
-          el.pause();
-        }
+        visible = entry.isIntersecting;
+        if (visible) attempt();
+        else el.pause();
       },
       { threshold: 0.15 },
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+
+    /* preload="none" means that first attempt runs at readyState 0, with no
+       data and the request only just sent. play() can lose that race and
+       reject, and because the clip is already in view no further intersection
+       is coming, so a single attempt left it on its poster for good. Switching
+       the filter and back was what appeared to fix it: the component remounts,
+       the file is in the cache by then, and play() wins. These two events are
+       the retry that makes the first appearance behave like the second. */
+    el.addEventListener("loadeddata", attempt);
+    el.addEventListener("canplay", attempt);
+    for (const event of GESTURES) {
+      window.addEventListener(event, attempt, { passive: true });
+    }
+
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("loadeddata", attempt);
+      el.removeEventListener("canplay", attempt);
+      for (const event of GESTURES) {
+        window.removeEventListener(event, attempt);
+      }
+    };
   }, []);
 
   return (

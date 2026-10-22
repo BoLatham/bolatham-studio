@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 
+import { GESTURES, markMuted } from "@/components/media/autoplay";
+
 const MOBILE_QUERY = "(max-width: 780px)";
 
 function subscribe(onChange: () => void) {
@@ -15,16 +17,6 @@ const getSnapshot = () =>
 
 /** No video in the server HTML; the client resolves which one to fetch. */
 const getServerSnapshot = () => null;
-
-/** Events after which a refused autoplay is worth attempting again. */
-const GESTURES = [
-  "pointerdown",
-  "touchstart",
-  "touchend",
-  "click",
-  "keydown",
-  "scroll",
-] as const;
 
 /**
  * Keeps the hero clip running, which the autoplay attribute alone does not
@@ -51,12 +43,7 @@ function useBackgroundPlayback(variant: "mobile" | "desktop" | null) {
     const el = ref.current;
     if (!el) return;
 
-    // Attribute as well as property, per (1) above. defaultMuted is the
-    // property that maps to the attribute, so set all three and let whichever
-    // one the engine consults find the video muted.
-    el.defaultMuted = true;
-    el.muted = true;
-    el.setAttribute("muted", "");
+    markMuted(el);
 
     const attempt = () => {
       if (!el.paused) return;
