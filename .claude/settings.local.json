@@ -47,7 +47,6 @@
       "Bash(python3 -)",
       "WebSearch",
       "Bash(curl -sL \"https://developer.apple.com/tutorials/data/documentation/technotes/tn3156-create-rich-previews-for-messages.json\" -o tn3156.json -w \"HTTP %{http_code} size %{size_download}\\\\n\")",
-      "Bash(python3 -c ' *)",
       "Bash(ffmpeg -y -v error -f lavfi -i \"color=c=0x1F1E1F:s=1200x630\" -i disc.png -filter_complex \"[1:v]format=rgba,scale=380:380:flags=lanczos[d];[0:v][d]overlay=\\(W-w\\)/2:\\(H-h\\)/2:format=auto,format=rgb24\" -frames:v 1 opengraph-image.png)",
       "Bash(sips -g pixelWidth -g pixelHeight opengraph-image.png)",
       "Bash(cp __TRACKED_VAR__/favicon.ico src/app/favicon.ico)",
@@ -71,7 +70,6 @@
       "Bash(curl -s -r 0-1023 -o /dev/null -w \"HTTP %{http_code}  %{size_download} bytes\\\\n\" http://localhost:3000/share/og-video.mp4)",
       "Bash(npx eslint *)",
       "Bash(ffmpeg -y -v error -i \"/Users/bolatham/Documents/Claude/Projects/BO LATHAM STUDIO/src/app/opengraph-image.png\" -vf scale=600:-1 final-still.png)",
-      "Bash(node -e ' *)",
       "Bash(curl -s -o prod.html -w \"HTTP %{http_code}  %{size_download} bytes  type=%{content_type}\\\\n\" https://bolatham.studio)",
       "Bash(curl -s \"http://localhost:3000/case-studies/pit-crew-chronicles\")",
       "Bash(curl -s -o /dev/null -w \"unhashed /opengraph-image.png -> HTTP %{http_code}  %{content_type}\\\\n\" http://localhost:3000/opengraph-image.png)"
