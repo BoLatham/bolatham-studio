@@ -144,8 +144,8 @@
      inset: 0 and cover whatever height it settles at. */
   .hero__media {
     height: auto;
-    min-height: 62vh;
-    min-height: 62svh;
+    min-height: 58vh;
+    min-height: 58svh;
   }
 
   .hero__content {
@@ -212,14 +212,17 @@
      between two full sections. The row sat at 20/28, a third of that, which
      made the top of the page read tighter than anything below it.
 
-     32 above and 48 below puts it on the same scale and says what the row is:
-     part of the opening, so it stays closer to the hero than to the first real
-     section, with a true band break before the Explore headline. The hero's
-     own air below the bio and its fade add to the 32, so the two sides look
-     closer than the numbers suggest. */
+     32 above and 64 below reads as even rather than measuring even, which is
+     the point. The hero centres a fixed copy block inside a viewport fraction,
+     so its spare room lands as air below the bio and counts as part of the gap
+     above the row: at 62svh that air plus a 32px margin came to 97px above
+     against 56px below. Taking the floor to 58svh and the margin under the row
+     to 64px brings the two to roughly 83 and 72 on a 393x684 phone, which is
+     as close as this can get while the hero still scales with the screen and
+     the copy does not. */
   .marquee-outer {
     margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
   }
 
   /* Every --hm is calibrated so each mark renders 56px tall whatever padding
