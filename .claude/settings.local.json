@@ -70,7 +70,11 @@
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}  %{content_type}  %{size_download} bytes\\\\n\" http://localhost:3000/share/og-video.mp4)",
       "Bash(curl -s -r 0-1023 -o /dev/null -w \"HTTP %{http_code}  %{size_download} bytes\\\\n\" http://localhost:3000/share/og-video.mp4)",
       "Bash(npx eslint *)",
-      "Bash(ffmpeg -y -v error -i \"/Users/bolatham/Documents/Claude/Projects/BO LATHAM STUDIO/src/app/opengraph-image.png\" -vf scale=600:-1 final-still.png)"
+      "Bash(ffmpeg -y -v error -i \"/Users/bolatham/Documents/Claude/Projects/BO LATHAM STUDIO/src/app/opengraph-image.png\" -vf scale=600:-1 final-still.png)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s -o prod.html -w \"HTTP %{http_code}  %{size_download} bytes  type=%{content_type}\\\\n\" https://bolatham.studio)",
+      "Bash(curl -s \"http://localhost:3000/case-studies/pit-crew-chronicles\")",
+      "Bash(curl -s -o /dev/null -w \"unhashed /opengraph-image.png -> HTTP %{http_code}  %{content_type}\\\\n\" http://localhost:3000/opengraph-image.png)"
     ]
   }
 }
